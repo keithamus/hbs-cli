@@ -1,0 +1,74 @@
+{
+  "name": "hbs-cli",
+  "version": "0.0.0-development",
+  "description": "A CLI tool for rendering Handlebars templates",
+  "homepage": "http://github.com/keithamus/hbs-cli/issues",
+  "bugs": "http://github.com/keithamus/hbs-cli/issues",
+  "license": "MIT",
+  "author": "Keith Cirkel (http://keithcirkel.co.uk)",
+  "files": [
+    "lib/*.js"
+  ],
+  "main": "lib/index.js",
+  "bin": {
+    "hbs": "lib/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/keithamus/hbs-cli.git"
+  },
+  "scripts": {
+    "lint": "eslint src test --ignore-path .gitignore",
+    "prepublish": "babel src -d lib",
+    "pretest": "npm run lint",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "test": "npm run test:run:1 && npm run test:verify:1",
+    "test:run:1": "node . -H handlebars-helper-br -D ./test/data.json -o test test/test-1.hbs",
+    "test:verify:1": "diff test/test-1.html test/verify-1.html",
+    "watch": "npm run prepublish -- -w"
+  },
+  "config": {
+    "ghooks": {
+      "commit-msg": "validate-commit-msg",
+      "pre-commit": "npm test"
+    }
+  },
+  "babel": {
+    "compact": false,
+    "ignore": "node_modules",
+    "loose": "all",
+    "optional": "runtime",
+    "retainLines": true,
+    "stage": 2
+  },
+  "eslintConfig": {
+    "extends": "strict",
+    "parser": "babel-eslint",
+    "rules": {
+      "no-console": 0,
+      "no-process-exit": 0
+    }
+  },
+  "dependencies": {
+    "babel-runtime": "^5.8.34",
+    "debug": "^2.2.0",
+    "fs-promise": "^0.3.1",
+    "glob-promise": "^1.0.4",
+    "handlebars": "^4.0.5",
+    "lodash.merge": "^3.3.2",
+    "minimist": "^1.2.0",
+    "resolve": "^1.1.6"
+  },
+  "devDependencies": {
+    "babel": "^5.8.34",
+    "babel-eslint": "^4.1.6",
+    "eslint": "^1.10.3",
+    "eslint-config-strict": "^7.0.4",
+    "eslint-plugin-filenames": "^0.2.0",
+    "ghooks": "^1.0.1",
+    "handlebars-helper-br": "^0.1.0",
+    "semantic-release": "^4.3.5",
+    "travis-after-all": "^1.4.4",
+    "validate-commit-msg": "^1.0.0"
+  }
+}

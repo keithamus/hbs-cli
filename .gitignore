@@ -1,0 +1,9 @@
+*~
+Thumbs.db
+node_modules/
+*.log
+*.log*
+*.pid
+*.seed
+lib/
+test/test*.html
