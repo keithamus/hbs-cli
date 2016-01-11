@@ -127,16 +127,17 @@ if (require.main === module) {
       hbs [-P <partial>]... [-H <helper>]... [-D <data>]... [-o <directory>] [--] (<template...>)
 
       -h, --help                 output usage information
+      -v, --version              output the version number
       -o, --output <directory>   Directory to output rendered templates, defaults to cwd
       -P, --partial <glob>...    Register a partial (use as many of these as you want)
       -H, --helper <glob>...     Register a helper (use as many of these as you want)
       -D, --data <glob|json>...  Parse some data
-      -v, --version              output the version number
 
     Examples:
 
     hbs --helper handlebars-layouts --partial ./templates/layout.hbs -- ./index.hbs
-    hbs --obj ./package.json ./homepage.hbs --output ./site/
+    hbs --data ./package.json --data ./extra.json ./homepage.hbs --output ./site/
+    hbs --helpers ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
     `);
   } else {
     const setup = [];
