@@ -85,11 +85,15 @@ export async function addObjectsToData(objects) {
   return merge({}, ...dataSets.concat(fileContents));
 }
 
-export async function renderHandlebarsTemplate(files, outputDirectory = process.cwd(), data = {}) {
+export async function renderHandlebarsTemplate(files, stdout = false, outputDirectory = process.cwd(), data = {}) {
   await Promise.all(files.map(async function renderTemplate(file) {
     debug(`Rendering template ${file} with data`, data);
     const path = resolvePath(outputDirectory, `${basename(file, extname(file))}.html`);
-    await writeFile(path, Handlebars.compile(await readFile(file, 'utf8'))(data), 'utf8');
+    if (stdout) {
+      await process.stdout.write(Handlebars.compile(await readFile(file, 'utf8'))(data), 'utf8');
+    } else {
+      await writeFile(path, Handlebars.compile(await readFile(file, 'utf8'))(data), 'utf8');
+    }
     debug(`Wrote ${path}`);
     console.log(`Wrote ${path} from ${file}`);
   }));
@@ -106,11 +110,13 @@ if (require.main === module) {
     boolean: [
       'version',
       'help',
+      'stdout'
     ],
     alias: {
       'v': 'version',
       'h': 'help',
       'o': 'output',
+      's': 'stdout',
       'D': 'data',
       'P': 'partial',
       'H': 'helper',
@@ -129,6 +135,7 @@ if (require.main === module) {
       -h, --help                 output usage information
       -v, --version              output the version number
       -o, --output <directory>   Directory to output rendered templates, defaults to cwd
+      -s, --stdout               Output to standard output
       -P, --partial <glob>...    Register a partial (use as many of these as you want)
       -H, --helper <glob>...     Register a helper (use as many of these as you want)
       -D, --data <glob|json>...  Parse some data
@@ -154,9 +161,13 @@ if (require.main === module) {
       debug('Setting up data', options.data);
       setup.push(addObjectsToData(options.data).then((result) => data = result));
     }
+    if (options.stdout) {
+      debug('disabling console out'); 
+      console.log = function() {};
+    }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
-      .then((files) => renderHandlebarsTemplate(files, options.output, data))
+      .then((files) => renderHandlebarsTemplate(files, options.stdout, options.output, data))
       .catch((error) => {
         console.error(error.stack || error);
         process.exit(1);
