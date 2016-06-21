@@ -110,7 +110,7 @@ if (require.main === module) {
     boolean: [
       'version',
       'help',
-      'stdout'
+      'stdout',
     ],
     alias: {
       'v': 'version',
@@ -162,8 +162,8 @@ if (require.main === module) {
       setup.push(addObjectsToData(options.data).then((result) => data = result));
     }
     if (options.stdout) {
-      debug('disabling console out'); 
-      console.log = function() {};
+      debug('disabling console out');
+      console.log = function empty() {};
     }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
