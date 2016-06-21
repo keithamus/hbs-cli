@@ -47,7 +47,7 @@ export function addHandlebarsHelpers(files) {
       debug(`${file} has a register function, registering with handlebars`);
       handlebarsHelper.register(Handlebars);
     } else {
-      console.log(`WARNING: ${file} does not export a 'register' function, cannot import`);
+      console.error(`WARNING: ${file} does not export a 'register' function, cannot import`);
     }
   });
 }
@@ -85,13 +85,18 @@ export async function addObjectsToData(objects) {
   return merge({}, ...dataSets.concat(fileContents));
 }
 
-export async function renderHandlebarsTemplate(files, outputDirectory = process.cwd(), data = {}) {
+export async function renderHandlebarsTemplate(files, outputDirectory = process.cwd(), data = {}, stdout = false) {
   await Promise.all(files.map(async function renderTemplate(file) {
     debug(`Rendering template ${file} with data`, data);
     const path = resolvePath(outputDirectory, `${basename(file, extname(file))}.html`);
-    await writeFile(path, Handlebars.compile(await readFile(file, 'utf8'))(data), 'utf8');
+    const htmlContents = Handlebars.compile(await readFile(file, 'utf8'))(data);
+    if (stdout) {
+      await process.stdout.write(htmlContents, 'utf8');
+    } else {
+      await writeFile(path, htmlContents, 'utf8');
+    }
     debug(`Wrote ${path}`);
-    console.log(`Wrote ${path} from ${file}`);
+    console.error(`Wrote ${path} from ${file}`);
   }));
 }
 
@@ -106,11 +111,13 @@ if (require.main === module) {
     boolean: [
       'version',
       'help',
+      'stdout',
     ],
     alias: {
       'v': 'version',
       'h': 'help',
       'o': 'output',
+      's': 'stdout',
       'D': 'data',
       'P': 'partial',
       'H': 'helper',
@@ -118,9 +125,9 @@ if (require.main === module) {
   });
   debug('Parsed argv', options);
   if (options.version) {
-    console.log(packageJson.version);
+    console.error(packageJson.version);
   } else if (options.help || !options._ || !options._.length) {
-    console.log(`
+    console.error(`
     Usage:
       hbs --version
       hbs --help
@@ -129,6 +136,7 @@ if (require.main === module) {
       -h, --help                 output usage information
       -v, --version              output the version number
       -o, --output <directory>   Directory to output rendered templates, defaults to cwd
+      -s, --stdout               Output to standard output
       -P, --partial <glob>...    Register a partial (use as many of these as you want)
       -H, --helper <glob>...     Register a helper (use as many of these as you want)
       -D, --data <glob|json>...  Parse some data
@@ -156,7 +164,7 @@ if (require.main === module) {
     }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
-      .then((files) => renderHandlebarsTemplate(files, options.output, data))
+      .then((files) => renderHandlebarsTemplate(files, options.output, data, options.stdout))
       .catch((error) => {
         console.error(error.stack || error);
         process.exit(1);
