@@ -22,9 +22,11 @@
     "prepublish": "babel src -d lib",
     "pretest": "npm run lint",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "test": "npm run test:run:1 && npm run test:verify:1",
+    "test": "npm run test:run:1 && npm run test:verify:1 && npm run test:run:2 && npm run test:verify:2",
     "test:run:1": "node . -H handlebars-helper-br -D ./test/data.json -o test test/test-1.hbs",
     "test:verify:1": "diff test/test-1.html test/verify-1.html",
+    "test:run:2": "node . -s -H handlebars-helper-br -D ./test/data.json test/test-1.hbs > test/test-2.html",
+    "test:verify:2": "diff test/test-2.html test/verify-1.html",
     "watch": "npm run prepublish -- -w"
   },
   "config": {
@@ -64,7 +66,7 @@
     "babel-eslint": "^4.1.6",
     "eslint": "^1.10.3",
     "eslint-config-strict": "^7.0.4",
-    "eslint-plugin-filenames": "^0.2.0",
+    "eslint-plugin-filenames": "^1.0.0",
     "ghooks": "^1.0.1",
     "handlebars-helper-br": "^0.1.0",
     "semantic-release": "^4.3.5",
