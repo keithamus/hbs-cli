@@ -85,17 +85,18 @@ export async function addObjectsToData(objects) {
   return merge({}, ...dataSets.concat(fileContents));
 }
 
-export async function renderHandlebarsTemplate(files, stdout = false, outputDirectory = process.cwd(), data = {}) {
+export async function renderHandlebarsTemplate(files, outputDirectory = process.cwd(), data = {}, stdout = false) {
   await Promise.all(files.map(async function renderTemplate(file) {
     debug(`Rendering template ${file} with data`, data);
     const path = resolvePath(outputDirectory, `${basename(file, extname(file))}.html`);
+    const htmlContents = Handlebars.compile(await readFile(file, 'utf8'))(data);
     if (stdout) {
-      await process.stdout.write(Handlebars.compile(await readFile(file, 'utf8'))(data), 'utf8');
+      await process.stdout.write(htmlContents, 'utf8');
     } else {
-      await writeFile(path, Handlebars.compile(await readFile(file, 'utf8'))(data), 'utf8');
+      await writeFile(path, htmlContents, 'utf8');
     }
     debug(`Wrote ${path}`);
-    console.log(`Wrote ${path} from ${file}`);
+    console.err(`Wrote ${path} from ${file}`);
   }));
 }
 
@@ -161,13 +162,9 @@ if (require.main === module) {
       debug('Setting up data', options.data);
       setup.push(addObjectsToData(options.data).then((result) => data = result));
     }
-    if (options.stdout) {
-      debug('disabling console out');
-      console.log = function empty() {};
-    }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
-      .then((files) => renderHandlebarsTemplate(files, options.stdout, options.output, data))
+      .then((files) => renderHandlebarsTemplate(files, options.output, data, options.stdout))
       .catch((error) => {
         console.error(error.stack || error);
         process.exit(1);
