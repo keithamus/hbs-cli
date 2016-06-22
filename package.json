@@ -52,25 +52,25 @@
     }
   },
   "dependencies": {
-    "babel-runtime": "^5.8.34",
+    "babel-runtime": "^6.9.2",
     "debug": "^2.2.0",
-    "fs-promise": "^0.3.1",
+    "fs-promise": "^0.5.0",
     "glob-promise": "^1.0.4",
     "handlebars": "^4.0.5",
-    "lodash.merge": "^3.3.2",
+    "lodash.merge": "^4.4.0",
     "minimist": "^1.2.0",
     "resolve": "^1.1.6"
   },
   "devDependencies": {
-    "babel": "^5.8.34",
-    "babel-eslint": "^4.1.6",
-    "eslint": "^1.10.3",
-    "eslint-config-strict": "^7.0.4",
-    "eslint-plugin-filenames": "^0.2.0",
+    "babel": "^6.5.2",
+    "babel-eslint": "^6.0.5",
+    "eslint": "^2.13.1",
+    "eslint-config-strict": "^9.0.0",
+    "eslint-plugin-filenames": "^1.0.0",
     "ghooks": "^1.0.1",
     "handlebars-helper-br": "^0.1.0",
     "semantic-release": "^4.3.5",
     "travis-after-all": "^1.4.4",
-    "validate-commit-msg": "^1.0.0"
+    "validate-commit-msg": "^2.6.1"
   }
 }
