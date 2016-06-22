@@ -47,7 +47,7 @@ export function addHandlebarsHelpers(files) {
       debug(`${file} has a register function, registering with handlebars`);
       handlebarsHelper.register(Handlebars);
     } else {
-      console.log(`WARNING: ${file} does not export a 'register' function, cannot import`);
+      console.error(`WARNING: ${file} does not export a 'register' function, cannot import`);
     }
   });
 }
@@ -125,9 +125,9 @@ if (require.main === module) {
   });
   debug('Parsed argv', options);
   if (options.version) {
-    console.log(packageJson.version);
+    console.error(packageJson.version);
   } else if (options.help || !options._ || !options._.length) {
-    console.log(`
+    console.error(`
     Usage:
       hbs --version
       hbs --help
