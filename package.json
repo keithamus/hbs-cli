@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "babel": "^5.8.34",
-    "babel-eslint": "^4.1.6",
+    "babel-eslint": "^6.1.0",
     "eslint": "^1.10.3",
     "eslint-config-strict": "^7.0.4",
     "eslint-plugin-filenames": "^0.2.0",
