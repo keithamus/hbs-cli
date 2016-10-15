@@ -66,7 +66,7 @@
     "babel-eslint": "^6.1.1",
     "eslint": "^1.10.3",
     "eslint-config-strict": "^7.0.4",
-    "eslint-plugin-filenames": "^0.2.0",
+    "eslint-plugin-filenames": "^1.1.0",
     "ghooks": "^1.0.1",
     "handlebars-helper-br": "^0.1.0",
     "semantic-release": "^4.3.5",
