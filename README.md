@@ -19,5 +19,40 @@ Examples:
 
 hbs --helper handlebars-layouts --partial ./templates/layout.hbs -- ./index.hbs
 hbs --data ./package.json --data ./extra.json ./homepage.hbs --output ./site/
-hbs --helpers ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
+hbs --helper ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
+```
+
+
+## Using Helpers
+
+In order to use Handlebar helpers you can simply create a folder with all your helpers in a js file each. These modules must export a register function which gets the Handlebars instance passed through it's first parameter.
+
+```js
+// src/template_helper/times.js
+var times = function () {};
+
+times.register = function (Handlebars) {
+    Handlebars.registerHelper('times', function(n, block) {
+        var accum = '';
+        for(var i = 0; i < n; ++i)
+            accum += block.fn(i);
+        return accum;
+    });
+};
+
+module.exports = times;
+```
+
+Now you are able to use the `times` function within your Handlebars template such as this:
+
+```
+{{#times 10}}
+  <span>{{this}}</span>
+{{/times}}
+```
+
+To compile this template you may run this command:
+
+```bash
+hbs --helper ./src/template_helper/**/*.js --data src/data.json src/templates/**/*.hbs --output dist/
 ```
