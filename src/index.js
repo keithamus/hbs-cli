@@ -145,7 +145,7 @@ if (require.main === module) {
 
     hbs --helper handlebars-layouts --partial ./templates/layout.hbs -- ./index.hbs
     hbs --data ./package.json --data ./extra.json ./homepage.hbs --output ./site/
-    hbs --helpers ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
+    hbs --helper ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
     `);
   } else {
     const setup = [];
