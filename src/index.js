@@ -94,9 +94,9 @@ export async function renderHandlebarsTemplate(files, outputDirectory = process.
       await process.stdout.write(htmlContents, 'utf8');
     } else {
       await writeFile(path, htmlContents, 'utf8');
+      debug(`Wrote ${path}`);
+      console.error(`Wrote ${path} from ${file}`);
     }
-    debug(`Wrote ${path}`);
-    console.error(`Wrote ${path} from ${file}`);
   }));
 }
 
