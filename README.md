@@ -27,7 +27,7 @@ hbs --helper ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
 
 ## Using Helpers
 
-In order to use Handlebar helpers you can simply create a folder with all your helpers in a js file each. These modules must export a register function which gets the Handlebars instance passed through it's first parameter.
+In order to use Handlebar helpers you can simply create a folder with all your helpers in a js file each. These modules must export a register function which gets the Handlebars instance passed through its first parameter.
 
 ```js
 // src/template_helper/times.js
