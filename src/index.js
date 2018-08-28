@@ -85,10 +85,12 @@ export async function addObjectsToData(objects) {
   return merge({}, ...dataSets.concat(fileContents));
 }
 
-export async function renderHandlebarsTemplate(files, outputDirectory = process.cwd(), data = {}, stdout = false) {
+export async function renderHandlebarsTemplate(
+  files, outputDirectory = process.cwd(),
+  outputExtension = 'html', data = {}, stdout = false) {
   await Promise.all(files.map(async function renderTemplate(file) {
     debug(`Rendering template ${file} with data`, data);
-    const path = resolvePath(outputDirectory, `${basename(file, extname(file))}.html`);
+    const path = resolvePath(outputDirectory, `${basename(file, extname(file))}.${outputExtension}`);
     const htmlContents = Handlebars.compile(await readFile(file, 'utf8'))(data);
     if (stdout) {
       await process.stdout.write(htmlContents, 'utf8');
@@ -104,6 +106,7 @@ if (require.main === module) {
   const options = minimist(process.argv.slice(2), {
     string: [
       'output',
+      'extension',
       'partial',
       'helper',
       'data',
@@ -117,6 +120,7 @@ if (require.main === module) {
       'v': 'version',
       'h': 'help',
       'o': 'output',
+      'e': 'extension',
       's': 'stdout',
       'D': 'data',
       'P': 'partial',
@@ -136,9 +140,11 @@ if (require.main === module) {
       -h, --help                 output usage information
       -v, --version              output the version number
       -o, --output <directory>   Directory to output rendered templates, defaults to cwd
+      -e, --extension            Output extension of generated files, defaults to html
       -s, --stdout               Output to standard output
       -P, --partial <glob>...    Register a partial (use as many of these as you want)
       -H, --helper <glob>...     Register a helper (use as many of these as you want)
+
       -D, --data <glob|json>...  Parse some data
 
     Examples:
@@ -164,7 +170,7 @@ if (require.main === module) {
     }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
-      .then((files) => renderHandlebarsTemplate(files, options.output, data, options.stdout))
+      .then((files) => renderHandlebarsTemplate(files, options.output, options.extension, data, options.stdout))
       .catch((error) => {
         console.error(error.stack || error);
         process.exit(1);
