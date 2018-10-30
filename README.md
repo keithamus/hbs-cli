@@ -13,9 +13,9 @@ Usage:
   -h, --help                 output usage information
   -v, --version              output the version number
   -o, --output <directory>   Directory to output rendered templates, defaults to cwd
-  -P, --partial <glob>...    Register a partial (use as many of these as you want)
-  -H, --helper <glob>...     Register a helper (use as many of these as you want)
-  -D, --data <glob|json>...  Parse some data
+  -P, --partial <glob>...    Register a partial* (use as many of these as you want)
+  -H, --helper <glob>...     Register a helper* (use as many of these as you want)
+  -D, --data <glob|json>...  Parse some data*
 
 Examples:
 
@@ -24,6 +24,10 @@ hbs --data ./package.json --data ./extra.json ./homepage.hbs --output ./site/
 hbs --helper ./helpers/* --partial ./partials/* ./index.hbs # Supports globs!
 ```
 
+_* Yarn and NPM expand globs, so if you're using this in an NPM script make sure you wrap globs in quotes. For example:_
+```sh
+hbs index.hbs --partial 'partials/*.hbs'
+```
 
 ## Using Helpers
 
