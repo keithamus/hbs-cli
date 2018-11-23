@@ -54,7 +54,7 @@
   "dependencies": {
     "babel-runtime": "^5.8.34",
     "debug": "^2.2.0",
-    "fs-promise": "^0.3.1",
+    "fs-extra": "^7.0.1",
     "glob-promise": "^1.0.4",
     "handlebars": "^4.0.5",
     "lodash.merge": "^3.3.2",

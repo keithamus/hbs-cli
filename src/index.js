@@ -5,7 +5,7 @@ import minimist from 'minimist';
 import glob from 'glob-promise';
 import packageJson from '../package.json';
 import resolveNode from 'resolve';
-import { readFile, writeFile } from 'fs-promise';
+import { readFile, outputFile } from 'fs-extra';
 import merge from 'lodash.merge';
 const debug = require('debug')('hbs');
 function resolve(file, options) {
@@ -95,7 +95,7 @@ export async function renderHandlebarsTemplate(
     if (stdout) {
       await process.stdout.write(htmlContents, 'utf8');
     } else {
-      await writeFile(path, htmlContents, 'utf8');
+      await outputFile(path, htmlContents, 'utf8');
       debug(`Wrote ${path}`);
       console.error(`Wrote ${path} from ${file}`);
     }
