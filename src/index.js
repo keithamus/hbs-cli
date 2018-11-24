@@ -7,7 +7,7 @@ import packageJson from '../package.json';
 import resolveNode from 'resolve';
 import { readFile, writeFile } from 'fs-promise';
 import merge from 'lodash.merge';
-import mkdirp from 'mkdirp-promise';
+import mkdirp from 'mkdirp-then';
 const debug = require('debug')('hbs');
 function resolve(file, options) {
   return new Promise((resolvePromise, reject) => resolveNode(file, options, (error, path) => {
