@@ -7,6 +7,7 @@ import packageJson from '../package.json';
 import resolveNode from 'resolve';
 import { readFile, writeFile } from 'fs-promise';
 import merge from 'lodash.merge';
+import mkdirp from 'mkdirp-promise';
 const debug = require('debug')('hbs');
 function resolve(file, options) {
   return new Promise((resolvePromise, reject) => resolveNode(file, options, (error, path) => {
@@ -95,6 +96,7 @@ export async function renderHandlebarsTemplate(
     if (stdout) {
       await process.stdout.write(htmlContents, 'utf8');
     } else {
+      await mkdirp(outputDirectory);
       await writeFile(path, htmlContents, 'utf8');
       debug(`Wrote ${path}`);
       console.error(`Wrote ${path} from ${file}`);
