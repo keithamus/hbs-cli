@@ -13,9 +13,13 @@ Usage:
   -h, --help                 output usage information
   -v, --version              output the version number
   -o, --output <directory>   Directory to output rendered templates, defaults to cwd
-  -P, --partial <glob>...    Register a partial* (use as many of these as you want)
-  -H, --helper <glob>...     Register a helper* (use as many of these as you want)
-  -D, --data <glob|json>...  Parse some data*
+  -e, --extension            Output extension of generated files, defaults to html
+  -s, --stdout               Output to standard output
+  -i, --stdin                Receive data directly from stdin
+  -P, --partial <glob>...    Register a partial (use as many of these as you want)
+  -H, --helper <glob>...     Register a helper (use as many of these as you want)
+
+  -D, --data <glob|json>...  Parse some data
 
 Examples:
 
