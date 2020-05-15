@@ -22,11 +22,13 @@
     "prepublish": "babel src -d lib",
     "pretest": "npm run lint",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "test": "npm run test:run:1 && npm run test:verify:1 && npm run test:run:2 && npm run test:verify:2",
+    "test": "npm run test:run:1 && npm run test:verify:1 && npm run test:run:2 && npm run test:verify:2 && npm run test:run:3 && npm run test:verify:3",
     "test:run:1": "node . -H handlebars-helper-br -D ./test/data.json -o test test/test-1.hbs",
     "test:verify:1": "diff test/test-1.html test/verify-1.html",
     "test:run:2": "node . -s -H handlebars-helper-br -D ./test/data.json test/test-1.hbs > test/test-2.html",
     "test:verify:2": "diff test/test-2.html test/verify-1.html",
+    "test:run:3": "cat ./test/data.json | node . -s -H handlebars-helper-br --stdin test/test-1.hbs > test/test-3.html",
+    "test:verify:3": "diff test/test-3.html test/verify-1.html",
     "watch": "npm run prepublish -- -w"
   },
   "config": {
@@ -55,6 +57,7 @@
     "babel-runtime": "^5.8.34",
     "debug": "^2.2.0",
     "fs-promise": "^0.3.1",
+    "get-stdin": "^8.0.0",
     "glob-promise": "^1.0.4",
     "handlebars": "^4.0.5",
     "lodash.merge": "^3.3.2",

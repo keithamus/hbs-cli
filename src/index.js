@@ -8,6 +8,7 @@ import resolveNode from 'resolve';
 import { readFile, writeFile } from 'fs-promise';
 import merge from 'lodash.merge';
 import mkdirp from 'mkdirp-then';
+import getStdin from 'get-stdin';
 const debug = require('debug')('hbs');
 function resolve(file, options) {
   return new Promise((resolvePromise, reject) => resolveNode(file, options, (error, path) => {
@@ -86,6 +87,16 @@ export async function addObjectsToData(objects) {
   return merge({}, ...dataSets.concat(fileContents));
 }
 
+export async function getStdinData() {
+  const text = await getStdin();
+  try {
+    debug(`Attempting to parse ${text} as JSON`);
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(`stdin cannot be parsed as JSON`);
+  }
+}
+
 export async function renderHandlebarsTemplate(
   files, outputDirectory = process.cwd(),
   outputExtension = 'html', data = {}, stdout = false) {
@@ -117,6 +128,7 @@ if (require.main === module) {
       'version',
       'help',
       'stdout',
+      'stdin',
     ],
     alias: {
       'v': 'version',
@@ -124,6 +136,7 @@ if (require.main === module) {
       'o': 'output',
       'e': 'extension',
       's': 'stdout',
+      'i': 'stdin',
       'D': 'data',
       'P': 'partial',
       'H': 'helper',
@@ -144,6 +157,7 @@ if (require.main === module) {
       -o, --output <directory>   Directory to output rendered templates, defaults to cwd
       -e, --extension            Output extension of generated files, defaults to html
       -s, --stdout               Output to standard output
+      -i, --stdin                Receive data directly from stdin
       -P, --partial <glob>...    Register a partial (use as many of these as you want)
       -H, --helper <glob>...     Register a helper (use as many of these as you want)
 
@@ -169,6 +183,10 @@ if (require.main === module) {
     if (options.data) {
       debug('Setting up data', options.data);
       setup.push(addObjectsToData(options.data).then((result) => data = result));
+    }
+    if (options.stdin) {
+      debug('Setting up stdin', options.stdin);
+      setup.push(getStdinData().then((stdinData) => data = stdinData));
     }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
