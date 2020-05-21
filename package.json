@@ -1,6 +1,6 @@
 {
   "name": "hbs-cli",
-  "version": "0.0.0-development",
+  "version": "1.4.0",
   "description": "A CLI tool for rendering Handlebars templates",
   "homepage": "http://github.com/keithamus/hbs-cli/issues",
   "bugs": "http://github.com/keithamus/hbs-cli/issues",
