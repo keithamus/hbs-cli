@@ -60,7 +60,7 @@
     "get-stdin": "^8.0.0",
     "glob-promise": "^1.0.4",
     "handlebars": "^4.0.5",
-    "lodash.merge": "^3.3.2",
+    "lodash.merge": "^4.6.2",
     "minimist": "^1.2.0",
     "mkdirp-then": "^1.2.0",
     "resolve": "^1.1.6"
