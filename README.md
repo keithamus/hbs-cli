@@ -1,8 +1,14 @@
 # hbs-cli
 
-
-
 This is a tool to render [handlebars](http://handlebarsjs.com) templates, with the ability to require in Partials, Helpers and JSON Data.
+
+## Installation
+
+```sh
+$ npm install --save-dev hbs-cli
+```
+
+## Usage
 
 ```sh
 Usage:
