@@ -18,7 +18,7 @@
     "url": "git+ssh://git@github.com/keithamus/hbs-cli.git"
   },
   "scripts": {
-    "lint": "eslint src test --ignore-path .gitignore",
+    "lint": "eslint src --ignore-path .gitignore",
     "prepublish": "babel src -d lib",
     "pretest": "npm run lint",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
@@ -39,15 +39,30 @@
   },
   "babel": {
     "compact": false,
-    "ignore": "node_modules",
-    "loose": "all",
-    "optional": "runtime",
-    "retainLines": true,
-    "stage": 2
+    "ignore": [
+      "node_modules"
+    ],
+    "targets": {
+      "node": "14.0"
+    },
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "entry",
+          "corejs": "3.22",
+          "loose": true,
+          "modules": "commonjs"
+        }
+      ]
+    ],
+    "retainLines": true
   },
   "eslintConfig": {
-    "extends": "strict",
-    "parser": "babel-eslint",
+    "extends": [
+      "strict"
+    ],
+    "parser": "@babel/eslint-parser",
     "rules": {
       "no-console": 0,
       "no-process-exit": 0
@@ -65,11 +80,14 @@
     "resolve": "^1.1.6"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.0",
+    "@babel/eslint-parser": "^7.18.9",
+    "@babel/preset-env": "^7.19.0",
     "babel-eslint": "^7.1.0",
-    "eslint": "^3.9.1",
+    "eslint": "^8.23.0",
     "eslint-config-strict": "^10.0.2",
-    "eslint-plugin-filenames": "^1.1.0",
+    "eslint-plugin-filenames": "^1.3.2",
     "ghooks": "^1.0.1",
     "handlebars-helper-br": "^0.1.0",
     "semantic-release": "^4.3.5",

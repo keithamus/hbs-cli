@@ -11,9 +11,9 @@ import mkdirp from 'mkdirp-then';
 import getStdin from 'get-stdin';
 const debug = require('debug')('hbs');
 function resolve(file, options) {
-  return new Promise((resolvePromise, reject) => resolveNode(file, options, (error, path) => {
-    if (error) {
-      reject(error);
+  return new Promise((resolvePromise, reject) => resolveNode(file, options, (errorLocal, path) => {
+    if (errorLocal) {
+      reject(errorLocal);
     } else {
       resolvePromise(path);
     }
@@ -21,10 +21,10 @@ function resolve(file, options) {
 }
 export async function resolveModuleOrGlob(path, cwd = process.cwd()) {
   try {
-    debug(`Trying to require ${path} as a node_module`);
+    debug(`Trying to require ${ path } as a node_module`);
     return [ await resolve(path, { basedir: cwd }) ];
-  } catch (error) {
-    debug(`${path} is glob or actual file, expanding...`);
+  } catch (errorInCatch) {
+    debug(`${ path } is glob or actual file, expanding...`);
     return await glob(path, { cwd });
   }
 }
@@ -34,7 +34,7 @@ export async function expandGlobList(globs) {
     globs = [ globs ];
   }
   if (Array.isArray(globs) === false) {
-    throw new Error(`expandGlobList expects Array or String, given ${typeof globs}`);
+    throw new Error(`expandGlobList expects Array or String, given ${ typeof globs }`);
   }
   return (await Promise.all(
     globs.map((path) => resolveModuleOrGlob(path))
@@ -43,20 +43,20 @@ export async function expandGlobList(globs) {
 
 export function addHandlebarsHelpers(files) {
   files.forEach((file) => {
-    debug(`Requiring ${file}`);
+    debug(`Requiring ${ file }`);
     const handlebarsHelper = require(file); // eslint-disable-line global-require
     if (handlebarsHelper && typeof handlebarsHelper.register === 'function') {
-      debug(`${file} has a register function, registering with handlebars`);
+      debug(`${ file } has a register function, registering with handlebars`);
       handlebarsHelper.register(Handlebars);
     } else {
-      console.error(`WARNING: ${file} does not export a 'register' function, cannot import`);
+      console.error(`WARNING: ${ file } does not export a 'register' function, cannot import`);
     }
   });
 }
 
 export async function addHandlebarsPartials(files) {
-  await Promise.all(files.map(async function registerPartial(file) {
-    debug(`Registering partial ${file}`);
+  await Promise.all(files.map(async (file) => {
+    debug(`Registering partial ${ file }`);
     Handlebars.registerPartial(basename(file, extname(file)), await readFile(file, 'utf8'));
   }));
 }
@@ -66,21 +66,21 @@ export async function addObjectsToData(objects) {
     objects = [ objects ];
   }
   if (Array.isArray(objects) === false) {
-    throw new Error(`addObjectsToData expects Array or String, given ${typeof objects}`);
+    throw new Error(`addObjectsToData expects Array or String, given ${ typeof objects }`);
   }
   const dataSets = [];
-  const files = await expandGlobList(objects.filter((object) => {
+  const files = await expandGlobList(objects.filter((objectLocal) => {
     try {
-      debug(`Attempting to parse ${object} as JSON`);
-      dataSets.push(JSON.parse(object));
+      debug(`Attempting to parse ${ objectLocal } as JSON`);
+      dataSets.push(JSON.parse(objectLocal));
       return false;
-    } catch (error) {
+    } catch (errorInCatch) {
       return true;
     }
   }));
   const fileContents = await Promise.all(
-    files.map(async function registerPartial(file) {
-      debug(`Loading JSON file ${file}`);
+    files.map(async (file) => {
+      debug(`Loading JSON file ${ file }`);
       return JSON.parse(await readFile(file, 'utf8'));
     })
   );
@@ -90,33 +90,34 @@ export async function addObjectsToData(objects) {
 export async function getStdinData() {
   const text = await getStdin();
   try {
-    debug(`Attempting to parse ${text} as JSON`);
+    debug(`Attempting to parse ${ text } as JSON`);
     return JSON.parse(text);
-  } catch (error) {
-    throw new Error(`stdin cannot be parsed as JSON`);
+  } catch (errorInCatch) {
+    throw new Error('stdin cannot be parsed as JSON');
   }
 }
 
 export async function renderHandlebarsTemplate(
   files, outputDirectory = process.cwd(),
-  outputExtension = 'html', data = {}, stdout = false) {
-  await Promise.all(files.map(async function renderTemplate(file) {
-    debug(`Rendering template ${file} with data`, data);
-    const path = resolvePath(outputDirectory, `${basename(file, extname(file))}.${outputExtension}`);
-    const htmlContents = Handlebars.compile(await readFile(file, 'utf8'))(data);
+  outputExtension = 'html', dataLocal = {}, stdout = false) {
+  await Promise.all(files.map(async (file) => {
+    debug(`Rendering template ${ file } with data`, dataLocal);
+    const path = resolvePath(outputDirectory, `${ basename(file, extname(file)) }.${ outputExtension }`);
+    const htmlContents = Handlebars.compile(await readFile(file, 'utf8'))(dataLocal);
     if (stdout) {
       await process.stdout.write(htmlContents, 'utf8');
     } else {
       await mkdirp(outputDirectory);
       await writeFile(path, htmlContents, 'utf8');
-      debug(`Wrote ${path}`);
-      console.error(`Wrote ${path} from ${file}`);
+      debug(`Wrote ${ path }`);
+      console.error(`Wrote ${ path } from ${ file }`);
     }
   }));
 }
 
 if (require.main === module) {
   const options = minimist(process.argv.slice(2), {
+    /* eslint-disable id-blacklist */
     string: [
       'output',
       'extension',
@@ -171,7 +172,7 @@ if (require.main === module) {
     `);
   } else {
     const setup = [];
-    let data = {};
+    let dataLocal = {};
     if (options.helper) {
       debug('Setting up helpers', options.helper);
       setup.push(expandGlobList(options.helper).then(addHandlebarsHelpers));
@@ -182,17 +183,21 @@ if (require.main === module) {
     }
     if (options.data) {
       debug('Setting up data', options.data);
-      setup.push(addObjectsToData(options.data).then((result) => data = result));
+      setup.push(addObjectsToData(options.data).then((result) => {
+        dataLocal = result;
+      }));
     }
     if (options.stdin) {
       debug('Setting up stdin', options.stdin);
-      setup.push(getStdinData().then((stdinData) => data = stdinData));
+      setup.push(getStdinData().then((stdinData) => {
+        dataLocal = stdinData;
+      }));
     }
     Promise.all(setup)
       .then(() => expandGlobList(options._))
-      .then((files) => renderHandlebarsTemplate(files, options.output, options.extension, data, options.stdout))
-      .catch((error) => {
-        console.error(error.stack || error);
+      .then((files) => renderHandlebarsTemplate(files, options.output, options.extension, dataLocal, options.stdout))
+      .catch((errorLocal) => {
+        console.error(errorLocal.stack || errorLocal);
         process.exit(1);
       });
   }
